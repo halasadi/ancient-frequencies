@@ -1,0 +1,206 @@
+---
+title: "exploring data"
+author: "Hussein Al-Asadi"
+date: "November 3, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+meta <- read.csv("../data/inds.tsv", sep = "\t", header = TRUE)
+
+library('snpStats')
+plink <- read.plink("../data/AncientLazaridis2016Europe.bed", "../data/AncientLazaridis2016Europe.bim",
+                 "../data/AncientLazaridis2016Europe.fam")
+```
+
+
+## investigate SNP level
+```{r}
+geno = plink$genotypes
+snpsum.col <- col.summary(geno)
+print(head(snpsum.col))
+call <- 0.6
+use <- with(snpsum.col, Call.rate >= call & MAF > 0 & MAF < 1)
+use[is.na(use)] <- FALSE
+cat(ncol(geno)-sum(use),"SNPs will be removed due to low MAF or call rate.\n")
+geno <- geno[,use]
+snpsum.col <- snpsum.col[use,]
+print(geno)
+
+```
+
+## investigate the individual level
+```{r}
+snpsum.row <- row.summary(geno)
+hist(snpsum.row$Call.rate)
+```
+
+## dimension reduction
+
+```{r, cache = TRUE}
+#write.SnpMatrix(geno, file = "genotypes.txt")
+genotypes <- as.matrix(read.table("genotypes.txt"))
+# remove STUGGART and LOSCHBOUR because they are called using GATK
+genotypes <- genotypes[-which(rownames(genotypes) == "234" | (rownames(genotypes) == "236")),] 
+meta <- meta[-c(36,37),]
+# divide by 2 to account for the read sampling approahc
+genotypes <- genotypes / 2
+replace_missing = function(x){
+  x[is.na(x)] = mean(x, na.rm=TRUE)
+  x
+}
+ss <- data.frame(apply(genotypes, 2, replace_missing))
+
+### PCA but not helpful ###
+#pca <- prcomp(ss, center = TRUE, scale. = TRUE)
+#plot(pca$x[,1], pca$x[,2], type = "n", xlab = "PC1", ylab = "PC2")
+#text(pca$x[,1], pca$x[,2], labels = plink$fam$member, cex=.7)
+
+fit <- cmdscale(dist(ss), eig=TRUE, k =2)
+x <- fit$points[,1]
+y <- fit$points[,2]
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2", 
+     main="Metric	MDS",	type="n")
+
+meta.marcus <- read.csv("meta_marcus.txt")
+
+meta$clst <- meta.marcus$clst[match(meta$ID, meta.marcus$id)]
+colors <- rep("white", length(meta$clst))
+colors[which(meta$clst == "ba")] <- "red"
+colors[which(meta$clst == "mn")] <- "green"
+colors[which(meta$clst == "en")] <- "blue"
+colors[which(meta$clst == "ln")] <- "yellow"
+
+text(x, y, meta$clst, cex=.7, col = colors)
+```
+
+
+```{r, echo =FALSE, eval=FALSE}
+allele.freq.ba <- colMeans(genotypes[which(meta$clst == "ba"),], na.rm=TRUE)
+avg.age.ba <- mean(as.numeric(meta.marcus$max_date[which(meta.marcus$clst == "ba")]), na.rm=TRUE)
+allele.freq.en <- colMeans(genotypes[which(meta$clst == "en"),], na.rm=TRUE)
+avg.age.en <- mean(as.numeric(meta.marcus$max_date[which(meta.marcus$clst == "en")]), na.rm=TRUE)
+allele.freq.ln <- colMeans(genotypes[which(meta$clst == "ln"),], na.rm=TRUE)
+avg.age.ln <- mean(as.numeric(meta.marcus$max_date[which(meta.marcus$clst == "ln")]), na.rm=TRUE)
+allele.freq.mn <- colMeans(genotypes[which(meta$clst == "mn"),], na.rm=TRUE)
+avg.age.mn <- mean(as.numeric(meta.marcus$max_date[which(meta.marcus$clst == "mn")]), na.rm=TRUE)
+
+clt = c("en", "mn", "ln", "ba")
+x <- c(avg.age.en,avg.age.mn, avg.age.ln, avg.age.ba)
+plot.snp <- function(snp){
+  plot(x, c(allele.freq.en[snp], allele.freq.mn[snp], allele.freq.ln[snp],
+            allele.freq.ba[snp]), xaxt = "n", ylab = "freq", xlab = "culture")
+  axis(1, at = x, labels = clt)
+}
+
+allele.freq <- rbind(allele.freq.en, allele.freq.mn, allele.freq.ln, allele.freq.ba)
+allele.freq <- apply(allele.freq, 2, function(x) x - mean(x))
+plot(x, rowMeans(allele.freq),  xaxt = "n", ylab = "mean of mean-centered freqs", xlab = "culture")
+axis(1, at = x, labels = clt)
+```
+
+## visualize meta data
+
+```{r, echo = FALSE}
+library(rworldmap)
+newmap <- getMap(resolution = "low")
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1)
+points(meta$long, meta$lat, col = "red", lwd = 1)
+hist(meta$date, main = "", xlab = "time (thousand years BCE)")
+
+
+par(mfrow = c(3,2))
+b1 <- c(1700,2700)
+b2 <- c(2700, 3700)
+b3 <- c(3700, 4700)
+b4 <- c(4700, 5700)
+b5 <- c(5700, 6700)
+b6 <- c(6700, 7700)
+
+t1 <- meta[which(meta$date > b1[1] & meta$date <= b1[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "1700-2700")
+points(t1$long, t1$lat, col = "red", lwd = 1)
+
+t2 <- meta[which(meta$date > b2[1] & meta$date <= b2[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "2700-3700")
+points(t2$long, t2$lat, col = "red", lwd = 1)
+
+t3 <- meta[which(meta$date > b3[1] & meta$date <= b3[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "3700-4700")
+points(t3$long, t3$lat, col = "red", lwd = 1)
+
+t4 <- meta[which(meta$date > b4[1] & meta$date <= b4[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "4700-5700")
+points(t4$long, t4$lat, col = "red", lwd = 1)
+
+t5 <- meta[which(meta$date > b5[1] & meta$date <= b5[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "5700-6700")
+points(t5$long, t5$lat, col = "red", lwd = 1)
+
+t6 <- meta[which(meta$date > b6[1] & meta$date <= b6[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "6700-7700")
+points(t6$long, t6$lat, col = "red", lwd = 1)
+par(mfrow=c(1,1))
+```
+
+
+## time groupings
+
+
+```{r, echo = FALSE}
+
+## For each SNP, find the average allele freqency averaging across individuals in a time bin
+
+genotypes.std <- apply(genotypes, 2, function(x) x - mean(x, na.rm=TRUE))
+geno.b1 <- genotypes.std[which(meta$date > b1[1] & meta$date <= b1[2]),]
+geno.b2 <- genotypes.std[which(meta$date > b2[1] & meta$date <= b2[2]),]
+geno.b3 <- genotypes.std[which(meta$date > b3[1] & meta$date <= b3[2]),]
+geno.b4 <- genotypes.std[which(meta$date > b4[1] & meta$date <= b4[2]),]
+geno.b5 <- genotypes.std[which(meta$date > b5[1] & meta$date <= b5[2]),]
+geno.b6 <- genotypes.std[which(meta$date > b6[1] & meta$date <= b6[2]),]
+
+
+means.b1 <- mean(colMeans(geno.b1, na.rm=T))
+means.b2 <- mean(colMeans(geno.b2,na.rm=T))
+means.b3 <- mean(colMeans(geno.b3, na.rm=T))
+means.b4 <- mean(colMeans(geno.b4, na.rm=T))
+means.b5 <- mean(colMeans(geno.b5, na.rm=T))
+means.b6 <- mean(colMeans(geno.b6, na.rm=T))
+means <- rbind(means.b1, means.b2, means.b3, means.b4, means.b5, means.b6)
+
+## for each SNP substract the average across time bins, now each SNP is centered around 0
+#means <- apply(means, 2, function(x) x - mean(x))
+x = c(mean(b1), mean(b2), mean(b3), mean(b4), mean(b5), mean(b6))
+
+## average over SNPs in the time bin
+plot(x, means, xlab = "year (BCE)", ylab = "average frequency (mean centered)")
+```
+
+## spatial groupings
+
+assessing the isolation by distance assumption
+
+```{r, echo = F}
+x = cbind(meta$lat, meta$long)
+geographic.distance = as.matrix(dist(x))
+genetic.distance <- as.matrix(dist(genotypes))
+diag(genetic.distance) <- NA
+genetic.distance[which(geographic.distance == 0)] <- NA
+
+# break into bins
+
+nbrks <- 7
+probs = seq(0, 1, length.out = nbrks+1)
+brks <- quantile(as.vector(geographic.distance), probs = probs)
+quartile <- cut(as.vector(geographic.distance), breaks = brks, labels = 1:nbrks, include.lowest = T)
+mean.genetic =aggregate(as.vector(genetic.distance), list(quartile), mean)
+midPoints <- function(x){
+  (x[-length(x)]+x[-1])/2
+}
+
+plot(round(midPoints(brks),2), mean.genetic$x, xlab = "geographic class")
+```
