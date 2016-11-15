@@ -1,0 +1,261 @@
+---
+title: "Modeling Allele-Frequencies Over Time"
+author: "Hussein Al-Asadi & Joe Marcus"
+date: "November 3, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE}
+meta <- read.csv("../data/inds.tsv", sep = "\t", header = TRUE)
+```
+
+
+## investigate SNP level
+```{r, eval=FALSE}
+
+
+library('snpStats')
+plink <- read.plink("../data/AncientLazaridis2016Europe.bed", "../data/AncientLazaridis2016Europe.bim",
+                 "../data/AncientLazaridis2016Europe.fam")
+geno = plink$genotypes
+snpsum.col <- col.summary(geno)
+print(head(snpsum.col))
+call <- 0.6
+use <- with(snpsum.col, Call.rate >= call & MAF > 0 & MAF < 1)
+use[is.na(use)] <- FALSE
+cat(ncol(geno)-sum(use),"SNPs will be removed due to low MAF or call rate.\n")
+geno <- geno[,use]
+snpsum.col <- snpsum.col[use,]
+print(geno)
+
+```
+
+## investigate the individual level
+```{r, eval = FALSE}
+snpsum.row <- row.summary(geno)
+hist(snpsum.row$Call.rate)
+```
+
+
+```{r, cache = TRUE, echo = FALSE}
+#write.SnpMatrix(geno, file = "genotypes.txt")
+genotypes <- as.matrix(read.table("genotypes.txt"))
+replace_missing = function(x){
+  x[is.na(x)] = mean(x, na.rm=TRUE)
+  x
+}
+genotypes <- data.frame(apply(genotypes, 2, replace_missing))
+genotypes <- t(limma::voom(t(genotypes))$E);
+# remove STUGGART and LOSCHBOUR because they are called using GATK
+genotypes <- genotypes[-which(rownames(genotypes) == "234" | (rownames(genotypes) == "236")),] 
+meta <- meta[-c(36,37),]
+# divide by 2 to account for the read sampling approahc
+genotypes <- genotypes / 2
+## visualize meta data
+```
+
+## explore the meta data
+ 
+```{r, echo = FALSE}
+library(rworldmap)
+newmap <- getMap(resolution = "low")
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1)
+points(meta$long, meta$lat, col = "red", lwd = 1)
+hist(meta$time, main = "", xlab = "time (thousand years BCE)")
+
+
+par(mfrow = c(3,2))
+b1 <- c(1700,2700)
+b2 <- c(2700, 3700)
+b3 <- c(3700, 4700)
+b4 <- c(4700, 5700)
+b5 <- c(5700, 6700)
+b6 <- c(6700, 7700)
+
+t1 <- meta[which(meta$time > b1[1] & meta$time <= b1[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "1700-2700")
+points(t1$long, t1$lat, col = "red", lwd = 1)
+
+t2 <- meta[which(meta$time > b2[1] & meta$time <= b2[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "2700-3700")
+points(t2$long, t2$lat, col = "red", lwd = 1)
+
+t3 <- meta[which(meta$time > b3[1] & meta$time <= b3[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "3700-4700")
+points(t3$long, t3$lat, col = "red", lwd = 1)
+
+t4 <- meta[which(meta$time > b4[1] & meta$time <= b4[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "4700-5700")
+points(t4$long, t4$lat, col = "red", lwd = 1)
+
+t5 <- meta[which(meta$time > b5[1] & meta$time <= b5[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "5700-6700")
+points(t5$long, t5$lat, col = "red", lwd = 1)
+
+t6 <- meta[which(meta$time > b6[1] & meta$time <= b6[2]), ]
+plot(newmap, xlim = range(meta$long), ylim = range(meta$lat), asp = 1, main = "6700-7700")
+points(t6$long, t6$lat, col = "red", lwd = 1)
+par(mfrow=c(1,1))
+```
+
+## dimension reduction
+
+```{r, cache=TRUE, echo =FALSE}
+
+fit <- cmdscale(dist(genotypes), eig=TRUE, k =2)
+x <- fit$points[,1]
+y <- fit$points[,2]
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2", 
+     main="Metric	MDS, colored by time",	type="n")
+
+
+colors <- rep("white", nrow(meta))
+scale_colors <- cm.colors(6)
+colors[which(meta$time > b1[1] & meta$time <= b1[2])] <- scale_colors[1]
+colors[which(meta$time > b2[1] & meta$time <= b2[2])] <- scale_colors[2]
+colors[which(meta$time > b3[1] & meta$time <= b3[2])] <- scale_colors[3]
+colors[which(meta$time > b4[1] & meta$time <= b4[2])] <- scale_colors[4]
+colors[which(meta$time > b5[1] & meta$time <= b5[2])] <- scale_colors[5]
+colors[which(meta$time > b6[1] & meta$time <= b6[2])] <- scale_colors[6]
+text(x, y, substr(meta$country,1,3), cex=.7, col = colors)
+
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2", 
+     main="Metric	MDS, colored by country",	type="n")
+colors <- rep("white", nrow(meta))
+colors[which(meta$country == "Denmark")] <- "red"
+colors[which(meta$country == "Germany")] <- "blue"
+colors[which(meta$country == "Hungary")] <- "green"
+colors[which(meta$country == "Italy")] <- "orange"
+colors[which(meta$country == "Poland")] <- "purple"
+colors[which(meta$country == "Spain")] <- "brown"
+colors[which(meta$country == "Sweden")] <- "yellow"
+text(x, y, substr(meta$country,1,3), cex=.7, col = colors)
+
+
+popres.pca <- prcomp(genotypes, center = TRUE, scale. = TRUE)
+plot(popres.pca$x[,1], popres.pca$x[,2], type = "n", xlab = "PC1", ylab = "PC2")
+text(popres.pca$x[,1], popres.pca$x[,2], meta$time, cex=.7, col = colors)
+vars = (popres.pca$sdev)^2
+
+plot(vars/sum(vars), xlab = "PC", ylab = "Porportion of Variation Explained")
+```
+
+## time groupings
+
+```{r, echo = FALSE, eval = FALSE}
+
+## For each SNP, find the average allele freqency averaging across individuals in a time bin
+
+genotypes.std <- apply(genotypes, 2, function(x) x - mean(x, na.rm=TRUE))
+geno.b1 <- genotypes.std[which(meta$time > b1[1] & meta$time <= b1[2]),]
+geno.b2 <- genotypes.std[which(meta$time > b2[1] & meta$time <= b2[2]),]
+geno.b3 <- genotypes.std[which(meta$time > b3[1] & meta$time <= b3[2]),]
+geno.b4 <- genotypes.std[which(meta$time > b4[1] & meta$time <= b4[2]),]
+geno.b5 <- genotypes.std[which(meta$time > b5[1] & meta$time <= b5[2]),]
+geno.b6 <- genotypes.std[which(meta$time > b6[1] & meta$time <= b6[2]),]
+
+
+means.b1 <- mean(colMeans(geno.b1, na.rm=T))
+means.b2 <- mean(colMeans(geno.b2,na.rm=T))
+means.b3 <- mean(colMeans(geno.b3, na.rm=T))
+means.b4 <- mean(colMeans(geno.b4, na.rm=T))
+means.b5 <- mean(colMeans(geno.b5, na.rm=T))
+means.b6 <- mean(colMeans(geno.b6, na.rm=T))
+means <- rbind(means.b1, means.b2, means.b3, means.b4, means.b5, means.b6)
+
+## for each SNP substract the average across time bins, now each SNP is centered around 0
+#means <- apply(means, 2, function(x) x - mean(x))
+x = c(mean(b1), mean(b2), mean(b3), mean(b4), mean(b5), mean(b6))
+
+## average over SNPs in the time bin
+plot(x, means, xlab = "year (BCE)", ylab = "average frequency (mean centered)")
+```
+
+
+## Plotting genetic distance versus time and geographic distance
+
+
+### assessing the isolation by distance assumption across time
+
+```{r, echo = F}
+
+midPoints <- function(x){
+  (x[-length(x)]+x[-1])/2
+}
+
+n.time.brks <- 6
+time.probs = seq(0, 1, length.out = n.time.brks + 1)
+time.brks <- quantile(meta$time, probs = time.probs, na.rm=TRUE)
+quartile <- cut(meta$time, breaks = time.brks, labels = 1:n.time.brks, include.lowest = T)
+
+par(mfrow=c(3,2))
+for (i in 1:n.time.brks){
+  genotypes.subset <- genotypes[which(quartile==i),]
+  m <- as.matrix(dist(genotypes.subset))
+  diag(m) <- NA
+  m[lower.tri(m)] <- NA
+  lat = meta$lat[which(quartile==i)]
+  long = meta$long[which(quartile==i)]
+  
+  geo.dist <- as.matrix(geosphere::distm(cbind(long, lat)))
+  diag(geo.dist) <- NA
+  geo.dist[lower.tri(geo.dist)] <- NA
+
+  lm.model <- lm(as.vector(m) ~ as.vector(geo.dist))
+  plot(geo.dist, m, ylab = "genetic distance", main = paste0("midpoint of time bin: ", round(midPoints(time.brks)[i],2), ", r^2: ", format(summary(lm.model)$r.squared,digits=3)))
+  abline(lm.model, col = "red")
+}
+```
+
+### assessing the isolation by time assumption across space
+```{r, echo = FALSE}
+par(mfrow = c(2,2))
+countries <- c("Germany", "Hungary", "Spain", "Sweden")
+
+for (i in 1:4){
+  inds <- which(meta$country == countries[i])
+  genotypes.subset <- genotypes[inds,]
+  m <- as.matrix(dist(genotypes.subset))
+  diag(m) <- NA
+  m[lower.tri(m)] <- NA
+  lat = meta$lat[inds]
+  long = meta$long[inds]
+  time.dist = as.matrix(dist(meta$time[inds]))
+  diag(time.dist) <- NA
+  time.dist[lower.tri(time.dist)] <- NA
+  
+  lm.model <- lm(as.vector(m) ~ as.vector(time.dist))
+  plot(time.dist, m, ylab = "genetic distance", main = paste0(countries[i],", intercept: ", format(summary(lm.model)$r.squared,digits=3)))
+  abline(lm.model, col = "red")
+}
+```
+
+
+## Starting Model
+
+Let $j\in(1,..N)$ index individual where $N$ is the number of individuals. And let's fix a particular SNP for notation convinence (we can assume independence). Let $\theta_{x_j,t_j}$ index the allele frequencies on the unconstrained scale, and $x_j$ be the location of individual $j$ and $t_j$ be the time of individual $j$. Then,
+
+$$\theta_{x_j,t_j} \sim MVN(\vec{\mu}, \Sigma)$$
+
+where,
+
+$$\vec{\mu} = (\mu,...,\mu)$$
+$$\Sigma_{j,k} = \phi k_1(x_j, x_k) k_2(t_j, t_k)$$
+
+where the kernals are
+
+$$k_1(x_j,x_k) = e^{-|x_j-x_k|/\alpha}$$
+$$k_2(t_j,t_k) = e^{-|t_j-t_k|/\beta}$$
+
+Finally, 
+
+$$f_{x_j,t_j} = logit(\theta_{x_j,t_j})$$
+$$d_j \sim Bernoulli(f_{x_j,t_j})$$
+
+where $d_j$ is either 0 or 1 (data based on the read sampling approach)
+
+We fit this model using STAN. We can make this complicated later on.

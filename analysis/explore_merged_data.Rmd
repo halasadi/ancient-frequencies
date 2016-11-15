@@ -1,0 +1,174 @@
+---
+title: "Modeling Allele-Frequencies Over Time"
+author: "Hussein Al-Asadi & Joe Marcus"
+date: "November 3, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, eval = FALSE}
+
+#library('snpStats')
+#plink <- read.plink("../data/AncientLazaridis2016_HumanOriginsPublic2068_eur_ld_pruned.bed", #"../data/AncientLazaridis2016_HumanOriginsPublic2068_eur_ld_pruned.bim",
+#                 "../data/AncientLazaridis2016_HumanOriginsPublic2068_eur_ld_pruned.fam")
+
+
+```
+
+## load the data
+```{r, echo = FALSE}
+
+load("genotypes.Rdata")
+
+# Stuttgart and Loschbour are genotyped calls
+meta.ancients <- read.csv("../data/ancient_inds.tsv", sep = "\t", header = TRUE)
+# Here are all genotyped calls
+meta.modern <- read.table("../data/meta-modern.tsv", sep = "\t", header = TRUE)
+
+modern.inds <- match(meta.modern$id, rownames(genotypes))
+ancient.inds <- match(meta.ancients$ID, rownames(genotypes))
+geno.ancients <- genotypes[ancient.inds,]
+geno.moderns <- genotypes[modern.inds,]
+```
+
+
+```{r}
+replace_missing = function(x){
+  x[is.na(x)] = mean(x, na.rm=TRUE)
+  x
+}
+
+ancient.names <- row.names(geno.ancients)
+# weird outlier
+geno.ancients <- geno.ancients[-which(ancient.names == "ATP2"),]
+meta.ancients <- meta.ancients[-which(ancient.names == "ATP2"),]
+geno.ancients <- geno.ancients[,colSums(is.na(geno.ancients)) < nrow(geno.ancients)]
+geno.ancients <- geno.ancients[,colSums(is.na(geno.ancients))/nrow(geno.ancients) > 0.5]
+
+high.cov.inds <- c(35,36)
+for (i in 1:2){
+  for (j in 1:ncol(geno.ancients)){
+    if (!is.na(geno.ancients[high.cov.inds[i],j]) & geno.ancients[high.cov.inds[i],j] == 1){
+      geno.ancients[high.cov.inds[i],j] = sample(c(0,2), size=1)
+    }
+  }
+}
+geno.ancients <- geno.ancients/2
+
+geno.ancients.std <- data.frame(apply(geno.ancients, 2, replace_missing))
+
+geno.moderns <- geno.moderns[,which(colnames(geno.moderns) %in% colnames(geno.ancients))]
+geno.moderns.std <- data.frame(apply(geno.moderns, 2, replace_missing))
+
+#geno.ancients.std <- t(limma::voom(t(geno.ancients.std))$E)
+
+b1 <- c(1700,2700)
+b2 <- c(2700, 3700)
+b3 <- c(3700, 4700)
+b4 <- c(4700, 5700)
+b5 <- c(5700, 6700)
+b6 <- c(6700, 7700)
+break.points <- rbind(b1,b2,b3,b4,b5,b6)
+
+
+fit <- cmdscale(dist(geno.ancients.std), eig=TRUE, k =2)
+x <- fit$points[,1]
+y <- fit$points[,2]
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2", 
+     main="Metric	MDS, colored by time",	type="n")
+colors <- rep("white", nrow(meta.ancients))
+scale_colors <- cm.colors(6)
+
+for (i in 1:6){
+  colors[which(meta.ancients$time > break.points[i,1] & meta.ancients$time < break.points[i,2])] <- scale_colors[i]
+}
+text(x, y, substr(meta.ancients$country,1,3), cex=2, col = colors)
+
+
+fit <- cmdscale(dist(geno.moderns.std), eig=TRUE, k =2)
+x <- fit$points[,1]
+y <- fit$points[,2]
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2",	type="n")
+text(x, y, substr(meta.modern$pop,1,3), cex=2)
+```
+
+
+## asessing isolation by distance
+
+```{r}
+
+midPoints <- function(x){
+  (x[-length(x)]+x[-1])/2
+}
+
+n.time.brks <- 4
+time.probs = seq(0, 1, length.out = n.time.brks + 1)
+time.brks <- quantile(meta.ancients$time, probs = time.probs, na.rm=TRUE)
+quartile <- cut(meta.ancients$time, breaks = time.brks, labels = 1:n.time.brks, include.lowest = T)
+
+par(mfrow=c(2,2))
+for (i in 1:n.time.brks){
+  genotypes.subset <- geno.ancients[which(quartile==i),]
+  m <- as.matrix(dist(genotypes.subset))
+  diag(m) <- NA
+  m[lower.tri(m)] <- NA
+  lat = meta.ancients$lat[which(quartile==i)]
+  long = meta.ancients$long[which(quartile==i)]
+  
+  geo.dist <- as.matrix(geosphere::distm(cbind(long, lat)))/1000
+  diag(geo.dist) <- NA
+  geo.dist[lower.tri(geo.dist)] <- NA
+
+  lm.model <- lm(as.vector(m) ~ as.vector(geo.dist))
+  plot(geo.dist, m, ylab = "genetic distance", main = paste0("midpoint of time bin: ", round(midPoints(time.brks)[i],2), ", r^2: ", format(summary(lm.model)$r.squared,digits=3)))
+  abline(lm.model, col = "red")
+}
+```
+
+
+```{r}
+par(mfrow=c(1,1))
+m <- as.matrix(dist(geno.moderns.std))
+diag(m) <- NA
+m[lower.tri(m)] <- NA
+
+#might be relatives
+m[which(m==min(m, na.rm=TRUE))] <- NA
+
+geo.dist <- as.matrix(geosphere::distm(cbind(meta.modern$long, meta.modern$lat)))/1000
+diag(geo.dist) <- NA
+geo.dist[lower.tri(geo.dist)] <- NA
+
+lm.model <- lm(as.vector(m) ~ as.vector(geo.dist))
+plot(geo.dist, m, ylab = "genetic distance", main = paste0("moderns", " r^2: ", format(summary(lm.model)$r.squared,digits=3)))
+  abline(lm.model, col = "red")
+```
+
+
+
+### assessing isolation by time 
+```{r, echo = FALSE}
+par(mfrow = c(2,2))
+countries <- c("Germany", "Hungary", "Spain", "Sweden")
+
+for (i in 1:4){
+  inds <- which(meta.ancients$country == countries[i])
+  genotypes.subset <- geno.ancients.std[inds,]
+  m <- as.matrix(dist(genotypes.subset))
+  diag(m) <- NA
+  m[lower.tri(m)] <- NA
+  lat = meta.ancients$lat[inds]
+  long = meta.ancients$long[inds]
+  time.dist = as.matrix(dist(meta.ancients$time[inds]))
+  diag(time.dist) <- NA
+  time.dist[lower.tri(time.dist)] <- NA
+  
+  lm.model <- lm(as.vector(m) ~ as.vector(time.dist))
+  plot(time.dist, m, ylab = "genetic distance", main = paste0(countries[i],", intercept: ", format(summary(lm.model)$r.squared,digits=3)))
+  abline(lm.model, col = "red")
+}
+```
