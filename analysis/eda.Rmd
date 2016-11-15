@@ -1,0 +1,119 @@
+---
+title: "eda"
+author: "Joseph Marcus"
+date: "November 15, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Imports
+
+```{r imports, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+library(dplyr)
+library(geosphere)
+library(viridis)
+```
+
+## Read data
+```{r read_data, warning=FALSE, message=FALSE, cache=TRUE}
+load("../data/genotypes.Rdata")
+G <- genotypes
+snps <- colnames(G)
+geno_df <- as.data.frame(t(G))
+rownames(geno_df) <- NULL
+geno_df$snp <- snps
+meta_df <- read.table("../data/meta.tsv", stringsAsFactors = FALSE, header=TRUE)
+```
+
+## Process data
+
+```{r process_data, warning=FALSE, message=FALSE, cache=TRUE}
+# tidy format (long data.frame!!!)
+gath_geno_df <- geno_df %>% gather(iid, genotype, -snp)
+
+# outlier individual ids
+outlier_iids <- c("ATP2", "Stuttgart", "Loschbour")
+
+# remove outliers, 
+# join meta-data, 
+# add is modern indicator column,
+# sample genotypes from moderns
+gath_geno_df <- gath_geno_df %>% 
+                filter(!(iid %in% outlier_iids)) %>% 
+                inner_join(meta_df, by=c("iid")) %>%
+                mutate(is_modern = ifelse(time == 0, 1, 0)) %>%
+                mutate(sampled_genotype = ifelse(time == 1, sample(c(0, 2), size=1), genotype)) %>%
+                mutate(sampled_genotype = ifelse(is.na(genotype), NA, sampled_genotype / 2))
+
+# calculate genotype missingness for each snp in ancients
+miss_df <- gath_geno_df %>% 
+           filter(is_modern == 0) %>%
+           group_by(snp) %>% 
+           summarise(miss_rate = sum(is.na(genotype)) / n())
+
+# vector of snps with high missingness rate in ancients
+high_miss_df <- miss_df %>% filter(miss_rate >= .6) 
+high_miss_snps <- high_miss_df$snp
+
+# filter out snps with high missigness rate in ancients in full datset
+gath_geno_fil_df <- gath_geno_df %>% filter(!(snp %in% high_miss_snps)) 
+
+# create matrix for exploring ibd and ibt
+G_fil <- gath_geno_fil_df %>% select(snp, iid, sampled_genotype) %>% spread(iid, sampled_genotype)
+g_fil_snps <- G_fil$snp 
+G_fil <- as.matrix(G_fil %>% select(-snp))
+rownames(G_fil) <- g_fil_snps
+G_fil_T <- t(G_fil)
+```
+
+## Genetic, geographic and time distance between all pairs of individuals
+
+```{r dist}
+# genetic distance 
+geno_dist_mat <- as.matrix(dist(G_fil_T))
+diag(geno_dist_mat) <- NA
+geno_dist_mat[lower.tri(geno_dist_mat)] <- NA
+geno_dist_melt_df <- arrange(melt(geno_dist_mat), value) %>% filter(!is.na(value))
+colnames(geno_dist_melt_df) <- c("iid_0", "iid_1", "geno_dist")
+
+iids <- meta_df$iid
+
+# geographic distance 
+geo_dist_mat <- as.matrix(meta_df[, c("long", "lat")])
+geo_dist_mat <- as.matrix(distm(geo_dist_mat)) / 1000
+colnames(geo_dist_mat) <- iids
+rownames(geo_dist_mat) <- iids
+diag(geo_dist_mat) <- NA
+geo_dist_mat[lower.tri(geo_dist_mat)] <- NA
+geo_dist_melt_df <- arrange(melt(geo_dist_mat), value) %>% filter(!is.na(value))
+colnames(geo_dist_melt_df) <- c("iid_0", "iid_1", "geo_dist")
+
+# time distance
+time_dist_mat <- as.matrix(meta_df[, c("time")])
+time_dist_mat <- as.matrix(dist(time_dist_mat)) 
+colnames(time_dist_mat) <- iids
+rownames(time_dist_mat) <- iids
+diag(time_dist_mat) <- NA
+time_dist_mat[lower.tri(time_dist_mat)] <- NA
+time_dist_melt_df <- arrange(melt(time_dist_mat), value) %>% filter(!is.na(value))
+colnames(time_dist_melt_df) <- c("iid_0", "iid_1", "time_dist")
+
+df <- geno_dist_melt_df %>% inner_join(geo_dist_melt_df, by=c("iid_0", "iid_1")) %>%
+      inner_join(time_dist_melt_df, by=c("iid_0", "iid_1"))
+
+p <- ggplot(df, aes(x=geo_dist, y=geno_dist, color=time_dist)) + geom_point() + scale_color_viridis()
+p
+
+# x_df <- df %>% inner_join(meta_df, by = c("iid_0" = "iid")) %>% inner_join(meta_df, by = c("iid_1" = "iid"))
+# y_df <- x_df %>% filter(time.x > 5715.5, time.y > 5715.5)
+# ggplot(y_df, aes(x=geo_dist, y=geno_dist, color=time_dist)) + geom_point() + scale_color_viridis()
+# summary(lm(geno_dist ~ geo_dist, data=y_df))
+
+```
+
