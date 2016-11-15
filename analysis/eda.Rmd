@@ -48,7 +48,7 @@ gath_geno_df <- gath_geno_df %>%
                 filter(!(iid %in% outlier_iids)) %>% 
                 inner_join(meta_df, by=c("iid")) %>%
                 mutate(is_modern = ifelse(time == 0, 1, 0)) %>%
-                mutate(sampled_genotype = ifelse(time == 1, sample(c(0, 2), size=1), genotype)) %>%
+                mutate(sampled_genotype = ifelse((is_modern == 1 & genotype == 1), sample(c(0, 2), size=1), genotype)) %>%
                 mutate(sampled_genotype = ifelse(is.na(genotype), NA, sampled_genotype / 2))
 
 # calculate genotype missingness for each snp in ancients
