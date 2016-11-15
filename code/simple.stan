@@ -18,7 +18,7 @@ parameters {
   real<lower=0, upper = 1> alpha;
   real<lower=0, upper = 1> beta;
   real<lower=0> phi;
-  real<lower=0> sigma_sq;
+  real<lower=0> sigma_sq; // nugget effect
   vector[N] theta[P]; // frequencies on the uncontrained scale
 }
 
@@ -26,8 +26,7 @@ model {
    matrix[N,N] Sigma;
    for (i in 1:(N-1)){
        for (j in (i+1):N) {
-           Sigma[i,j] = exp(-pow(t[i] - t[j],2));
-       	   //Sigma[i,j] = phi * exp(-distance(l[i],l[j])/alpha) * exp(-sqrt(square(t[i]-t[j]))/beta);
+       	   Sigma[i,j] = phi * exp(-sqrt(square(t[i]-t[j]))/beta); // * exp(-distance(l[i],l[j])/alpha);
        	   Sigma[j,i] = Sigma[i,j];
 	}
    }
