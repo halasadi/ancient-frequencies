@@ -1,0 +1,168 @@
+---
+title: "stein-project"
+author: "Hussein Al-Asadi"
+date: "November 18, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library('rstan')
+library('MASS')
+library('boot')
+library("sp")
+
+
+```
+
+
+
+```{r, echo=FALSE}
+#### LOAD FUNCTIONS ###
+ 
+euc.dist <- function(x1, x2) sqrt(sum((x1 - x2) ^ 2))
+midPoints <- function(x){
+  (x[-length(x)]+x[-1])/2
+}
+
+generate_data <- function(alpha, beta, phi, N, P, xmin=0, xmax=10, ymin=0, ymax=10){
+  lat = (xmax-xmin) * runif(N)
+  long = (ymax-ymin) * runif(N)
+  my.locations <- cbind(lat,long)
+  t = 10 * runif(N)
+  mu = rep(0, N)
+  Sigma = matrix(nrow = N, ncol = N, 0)
+  for (i in 1:(N-1)){
+    for (j in (i+1):N){
+      Sigma[i,j] <- phi * exp(-euc.dist(my.locations[i,], my.locations[j,])/alpha) *   exp(-euc.dist(t[i], t[j])/beta);
+    Sigma[j,i] <- Sigma[i,j]
+    }
+  }
+
+  for (k in 1:N){
+    Sigma[k,k] <- phi + 0.01
+  }
+
+  theta = mvrnorm(n=P, mu=mu, Sigma=Sigma)
+  y = matrix(nrow=P, ncol = N, 0)
+  for (i in 1:N){
+    for (j in 1:P){
+      y[j,i] = rbinom(n=1,size=1, prob = inv.logit(theta[j,i]))
+    }
+  }
+  
+  ret = list(data = y, theta=theta, t = t, x = my.locations)
+
+}
+
+```
+
+```{r}
+N=30
+P=50
+phi=1
+alpha=100
+beta=50
+ret <- generate_data(alpha, beta, phi, N, P)
+nsamps = rep(1, N)
+
+test_data = list(N=N, P=P, n = nsamps, x = ret$x, t=ret$t,y = ret$data)
+
+
+fit = stan(file = "../code/simple-spatial-time-grouped.stan", data =test_data, iter=1000, chains=1)
+stan_plot(fit, pars=c("alpha", "beta", "phi"))
+get_posterior_mean(fit, pars = c("beta", "alpha", "phi"))
+plot(ret$theta, colMeans(extract(fit)$theta), xlab = "true theta", ylab = "estimated theta")
+abline(0, 1, col= "red", lwd=2)
+
+plot(ret$x[,1], ret$x[,2], xlab = "lat", ylab = "long", type = "n")
+text(ret$x[,1], ret$x[,2], round(ret$t, 1))
+
+```
+
+
+## spatial polygon assignment
+
+```{r, echo = FALSE}
+
+N=150
+P=200
+phi=1
+alpha=10
+beta=10
+ret <- generate_data(alpha, beta, phi, N, P)
+
+npops = 4
+xmin=0
+xmax=10
+ymin=0
+ymax=10
+lat = ret$x[,1]
+long = ret$x[,2]
+frame  <- data.frame(x = lat, y=long)
+points <- SpatialPoints(frame)
+proj4string(points) <-  CRS("+proj=longlat")
+grid  <- GridTopology(cellcentre.offset= c(xmin,ymin), cellsize = c(10,10), cells.dim = c(sqrt(npops),sqrt(npops)))
+sg    <- SpatialGrid(grid)
+poly  <- as.SpatialPolygons.GridTopology(grid)
+proj4string(poly) <-  CRS("+proj=longlat")
+result <- data.frame(frame,grid=over(points,poly))
+grid_ctr <- coordinates(grid)
+
+
+tmin = 0
+tmax = 10
+n.times <- 5
+time.step <- (tmax-tmin)/n.times
+breaks <- seq(tmin, tmax, by = time.step)
+rc <- cut(ret$t, breaks=breaks, labels = 1:n.times)
+midpoints.time <- midPoints(breaks)
+
+
+N.effective <- length(unique(rc)) * length(unique(result$grid))
+new.labels <- data.frame(nrow=N, ncol = 3, 0)
+colnames(new.labels) <- c("l.time", "l.space", "l.comb")
+# just need a unique label 
+label.mat <- matrix(nrow=length(unique(rc)), ncol = length(unique(result$grid)), 1:N.effective)
+for (i in 1:N){
+  new.labels[i,1] = rc[i]
+  new.labels[i,2] = result$grid[i]
+  new.labels[i,3] = label.mat[rc[i], result$grid[i]]
+}
+
+data.effective <- matrix(nrow = P, ncol = N.effective,0)
+nsamps = rep(0, N.effective)
+new.times <- rep(0, N.effective)
+new.coords <- matrix(nrow = N.effective, ncol =2,0)
+theta.effective <- matrix(nrow=P, ncol = N.effective, 0)
+for (i in 1:N.effective){
+  inds <- which(new.labels$l.comb==i)
+  nsamps[i] = length(inds)
+  new.times[i] <- midpoints.time[new.labels$l.time[inds[1]]]
+  new.coords[i,] <- grid_ctr[new.labels$l.space[inds[1]],]
+  for (j in 1:P){
+    data.effective[j,i] = sum(ret$data[j,inds]) 
+    theta.effective[j,i] = mean(ret$theta[j,inds])
+  }
+}
+
+
+test_data = list(N=N.effective, P=P, n = nsamps, x = new.coords, t=new.times,y = data.effective)
+
+fit = stan(file = "../code/simple-spatial-time-grouped.stan", data =test_data, iter=10000, chains=1)
+
+xx = as.vector(theta.effective)
+yy = as.vector(colMeans(extract(fit)$theta))
+plot(xx, yy, xlab = "true theta", ylab = "estimated theta", main = paste0("correlation is ", round(cor(xx,yy),2)))
+
+stan_plot(fit, pars=c("alpha", "beta", "phi"))
+get_posterior_mean(fit, pars = c("beta", "alpha", "phi"))
+
+scale_colors <- cm.colors(n.times)
+my.colors <- scale_colors[rc]
+plot(sg, axes=T)
+points(ret$x, col = my.colors, lwd=4)
+legend("topleft", pch=16, col=scale_colors,
+legend=midpoints.time)
+
+```
