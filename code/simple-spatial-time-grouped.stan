@@ -2,12 +2,12 @@
 // for squared exponential prior
 
 data {
-  int<lower=1> N;
-  vector[N] x;
-  matrix[N,2] t;
-  int<lower=0> n[N];
-  int<lower=0> P;
-  int<lower=0, upper = 10> y[P, N];
+  int<lower=1> N; // number of individuals
+  vector[N] t; // time
+  matrix[N,2] x; // lat longs
+  int<lower=0> n[N]; // samples per location
+  int<lower=0> P; // number of SNPs
+  int<lower=0, upper = 30> y[P, N]; // assumes max number of haploids is 30
 }
 transformed data {
   vector[N] mu;
@@ -28,8 +28,8 @@ model {
   for (i in 1:(N-1)) {
     for (j in (i+1):N) {
       real d;
-      d = distance(t[i], t[j]);
-      Sigma[i,j] <- phi * exp(-sqrt(pow(x[i] - x[j],2))/alpha)*exp(-d/beta);
+      d = distance(x[i], x[j]);
+      Sigma[i,j] <- phi * exp(-d/alpha) * exp(-sqrt(pow(t[i] - t[j],2))/beta);
       Sigma[j,i] <- Sigma[i,j];
     }
   }
@@ -43,7 +43,7 @@ model {
     y[k] ~ binomial_logit(n, theta[k]);
   }
 
-  alpha ~ gamma(0.1,0.1);
-  beta ~ gamma(0.1,0.1);
-  phi ~ gamma(0.1,0.1);
+  alpha ~ gamma(5,5);
+  beta ~ gamma(5,5);
+  phi ~ gamma(1,1);
 }

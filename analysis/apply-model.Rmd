@@ -1,0 +1,133 @@
+---
+title: "Applying STAN to the data"
+author: "Hussein Al-Asadi"
+date: "November 15, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Imports
+
+```{r imports, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+library(dplyr)
+library(geosphere)
+library(viridis)
+library(rstan)
+```
+
+## Read data
+```{r read_data, warning=FALSE, message=FALSE, cache=TRUE}
+load("../data/genotypes.Rdata")
+G <- genotypes
+snps <- colnames(G)
+geno_df <- as.data.frame(t(G))
+rownames(geno_df) <- NULL
+geno_df$snp <- snps
+meta_df <- read.table("../data/meta.tsv", stringsAsFactors = FALSE, header=TRUE)
+```
+
+## Process data
+
+```{r process_data, warning=FALSE, message=FALSE, cache=TRUE}
+# tidy format (long data.frame!!!)
+gath_geno_df <- geno_df %>% gather(iid, genotype, -snp)
+
+# outlier individual ids
+outlier_iids <- c("ATP2")
+
+# remove outliers, 
+# join meta-data, 
+# add is modern indicator column,
+# sample genotypes from moderns
+gath_geno_df <- gath_geno_df %>% 
+                filter(!(iid %in% outlier_iids)) %>% 
+                inner_join(meta_df, by=c("iid")) %>%
+                mutate(is_modern = ifelse(time == 0, 1, 0))
+
+# calculate genotype missingness for each snp in ancients
+miss_df <- gath_geno_df %>% 
+           filter(is_modern == 0) %>%
+           group_by(snp) %>% 
+           summarise(miss_rate = sum(is.na(genotype)) / n())
+
+# vector of snps with high missingness rate in ancients
+high_miss_df <- miss_df %>% filter(miss_rate >= .3) 
+high_miss_snps <- high_miss_df$snp
+
+# filter out snps with high missigness rate in ancients in full datset
+gath_geno_fil_df <- gath_geno_df %>% filter(!(snp %in% high_miss_snps)) 
+
+```
+
+
+### fit to the modern data
+```{r}
+gath.geno.modern <- gath_geno_fil_df %>% filter(is_modern== TRUE) %>% filter(!is.na(genotype))
+
+df.snp <- data.frame(snp=unique(gath.geno.modern$snp), new.snp=1:length(unique(gath.geno.modern$snp)), stringsAsFactors = FALSE)
+
+df.iid <- data.frame(iid=unique(gath.geno.modern$iid), new.iid=1:length(unique(gath.geno.modern$iid)), stringsAsFactors = FALSE)
+
+merge.df <- gath.geno.modern %>% inner_join(df.iid, by = c("iid")) %>% inner_join(df.snp, by = c("snp"))
+
+
+kk = merge.df$new.snp
+jj = merge.df$new.iid
+O = length(jj)
+P = length(unique(merge.df$snp))
+
+df.iid.2 <- df.iid %>% inner_join(meta_df, by=c("iid"))
+N = nrow(df.iid.2)
+my.locations <- cbind(df.iid.2$lat,df.iid.2$long)
+n = rep(2, N)
+
+my.data = list(jj=jj, kk=kk, O=O, N=N, x=my.locations, y = merge.df$genotype, n=n, P=P)
+
+fit = vb(stan_model(file="../code/model-spatial-only.stan"), data = my.data)
+
+stan_plot(fit, pars=c("alpha", "eta_sq", "phi"))
+my.means <- get_posterior_mean(fit, pars=c("alpha", "eta_sq", "phi"))
+#hist(inv.logit(colMeans(extract(fit)$mu)),10, xlab = "allele frequency", ylab = "count", main = "")
+```
+
+
+
+```{r}
+gath.geno.ancient <- gath_geno_fil_df %>% filter(is_modern== FALSE) %>% filter(!is.na(genotype)) %>% mutate(genotype = ifelse(!(iid %in% c("Stuttgart", "Loschbour")) & !is.na(genotype), genotype / 2, genotype))
+
+
+df.snp <- data.frame(snp=unique(gath.geno.ancient$snp), new.snp=1:length(unique(gath.geno.ancient$snp)), stringsAsFactors = FALSE)
+
+df.iid <- data.frame(iid=unique(gath.geno.ancient$iid), new.iid=1:length(unique(gath.geno.ancient$iid)), stringsAsFactors = FALSE)
+
+merge.df <- gath.geno.ancient %>% inner_join(df.iid, by = c("iid")) %>% inner_join(df.snp, by = c("snp"))
+
+kk = merge.df$new.snp
+jj = merge.df$new.iid
+O = length(jj)
+P = length(unique(merge.df$snp))
+
+df.iid.2 <- df.iid %>% inner_join(meta_df, by=c("iid"))
+N = nrow(df.iid.2)
+my.locations <- cbind(df.iid.2$lat,df.iid.2$long)
+t = df.iid.2$time
+n = rep(1, N)
+
+#binomial data for Loschbour and Stuttgart
+n[105]= 2
+n[106] =2
+
+my.data = list(jj=jj, kk=kk, O=O, N=N, x=my.locations, y = merge.df$genotype, n=n, P=P, t=t, alpha = my.means[1], phi = my.means[3])
+
+fit2 = vb(stan_model(file="../code/model-spatial-fixed-time.stan"), data = my.data)
+
+stan_plot(fit, pars=c("beta", "eta_sq"))
+my.means <- get_posterior_mean(fit, pars=c("alpha", "eta_sq", "phi"))
+
+```
