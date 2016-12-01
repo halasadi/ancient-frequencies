@@ -1,0 +1,329 @@
+iid	lat	long	time	sex	analyis_label	label	source	udg	data_type	location	country	coverage	n_snps
+RISE247	47.327	18.962	3372	M	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	Százhalombatta-Földvár	Hungary	0.273	237322
+RISE487	45.26	10.379	4557	M	Europe_MNChL	Remedello_BA	AllentoftNature2015	minus	Shotgun	Remedello di Sotto	Italy	0.223	239530
+RISE483	47.341	18.896	2000	F	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	Erd 4	Hungary	0.121	134337
+RISE71	56.676	10.034	3701	F	Europe_LNBA	Nordic_LN	AllentoftNature2015	minus	Shotgun	Falshöj	Denmark	0.26	203604
+RISE47	56.97	9.552	3153	M	Europe_LNBA	Nordic_BA	AllentoftNature2015	minus	Shotgun	Sebber skole	Denmark	0.105	103513
+RISE435	48.932	12.259	4094	F	Europe_LNBA	Corded_Ware_Germany	AllentoftNature2015	minus	Shotgun	Tiefbrunn	Germany	0.043	50680
+RISE486	45.26	10.379	3595	M	Europe_MNChL	Remedello_BA	AllentoftNature2015	minus	Shotgun	Remedello di Sotto	Italy	0.289	203575
+RISE61	55.703	11.855	4071	M	Europe_LNBA	Nordic_MN_B	AllentoftNature2015	minus	Shotgun	Kyndelöse	Denmark	0.318	293152
+RISE254	47.327	18.962	3631	M	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	Százhalombatta-Földvár	Hungary	0.038	42943
+RISE373	46.22	20.199	3476	F	Europe_LNBA	Maros	AllentoftNature2015	minus	Shotgun	Szöreg - C (Sziv Utca)	Hungary	0.282	259708
+RISE94	56.025	14.233	4025	M	Europe_LNBA	BattleAxe_Sweden	AllentoftNature2015	minus	Shotgun	Viby	Sweden	0.927	619914
+RISE179	55.397	13.6	3556	M	Europe_LNBA	Nordic_LN	AllentoftNature2015	minus	Shotgun	Abekås I	Sweden	0.045	50762
+RISE154	50.948	16.943	3522	F	Europe_LNBA	Unetice_EBA	AllentoftNature2015	minus	Shotgun	Szczepankowice	Poland	0.178	171391
+RISE98	55.381	13.445	3736	M	Europe_LNBA	Nordic_LN	AllentoftNature2015	minus	Shotgun	L Beddinge 56	Sweden	6.125	1125643
+RISE97	55.557	13.059	3590	F	Europe_LNBA	Nordic_LN	AllentoftNature2015	minus	Shotgun	Fredriksberg	Sweden	0.746	580367
+RISE175	55.397	13.6	3025	M	Europe_LNBA	Nordic_BA	AllentoftNature2015	minus	Shotgun	Abekås I	Sweden	0.104	112552
+RISE484	47.341	18.896	2000	F	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	Erd 4	Hungary	0.152	168871
+RISE210	55.997	14.104	3105	M	Europe_LNBA	Nordic_BA	AllentoftNature2015	minus	Shotgun	Ängamöllan	Sweden	0.046	51095
+RISE276	55.914	11.565	2525	M	Europe_LNBA	Nordic_LBA	AllentoftNature2015	minus	Shotgun	Trundholm mose II	Denmark	0.083	92841
+RISE374	46.22	20.199	3402	M	Europe_LNBA	Maros	AllentoftNature2015	minus	Shotgun	Szöreg - C (Sziv Utca)	Hungary	0.149	146423
+RISE479	47.341	18.896	2000	M	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	Erd 4	Hungary	1.4	884093
+RISE349	46.356	20.985	3588	F	Europe_LNBA	Hungary_MBA	AllentoftNature2015	minus	Shotgun	Battonya Vörös Oktober	Hungary	0.082	96499
+RISE431	52.143	16.538	3762	M	Europe_LNBA	Corded_Ware_Proto_Unetice_Poland	AllentoftNature2015	minus	Shotgun	Leki Male	Poland	0.111	124341
+RISE434	48.932	12.259	4161	M	Europe_LNBA	Corded_Ware_Germany	AllentoftNature2015	minus	Shotgun	Tiefbrunn	Germany	0.1	111108
+RISE109	50.98	17.068	3544	F	Europe_LNBA	Unetice_EBA	AllentoftNature2015	minus	Shotgun	Wojkowice	Poland	0.215	211732
+RISE150	50.918	16.957	3469	F	Europe_LNBA	Unetice_EBA	AllentoftNature2015	minus	Shotgun	Przeclawice	Poland	2.653	654921
+RISE480	47.341	18.896	1700	F	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	Erd 4	Hungary	0.148	158897
+RISE371	46.22	20.199	3653	F	Europe_LNBA	Maros	AllentoftNature2015	minus	Shotgun	Szöreg - C (Sziv Utca)	Hungary	0.045	53698
+RISE436	48.932	12.259	4124	M	Europe_LNBA	Corded_Ware_Germany	AllentoftNature2015	minus	Shotgun	Tiefbrunn	Germany	0.076	63030
+RISE446	50.009	10.18	4015	M	Europe_LNBA	Corded_Ware_Germany	AllentoftNature2015	minus	Shotgun	Bergrheinfeld	Germany	0.172	187862
+RISE489	45.26	10.379	4185	M	Europe_MNChL	Remedello_BA	AllentoftNature2015	minus	Shotgun	Remedello di Sotto	Italy	0.548	510496
+ATP16	42.3525	-3.518333333	4400	F	Europe_MNChL	Iberia_Chalcolithic	GuntherPNAS2015	minus	Shotgun	El Portalon Cave, Sierra de Atapuerca	Spain	1.184	839051
+ATP2	42.3525	-3.518333333	4210	M	Europe_MNChL	Iberia_Chalcolithic	GuntherPNAS2015	minus	Shotgun	El Portalon Cave, Sierra de Atapuerca	Spain	4.484	1205481
+ATP9	42.3525	-3.518333333	3390	F	Iberia_BA	Iberia_Bronze_Age	GuntherPNAS2015	minus	Shotgun	El Portalon Cave, Sierra de Atapuerca	Spain	0.461	449162
+Matojo	42.3525	-3.518333333	4300	M	Europe_MNChL	Iberia_Chalcolithic	GuntherPNAS2015	minus	Shotgun	El Portalon Cave, Sierra de Atapuerca	Spain	0.087	102497
+Stuttgart	48.78	9.18	6246	F	Europe_EN	Stuttgart	LazaridisNature2014	half	Shotgun	Viesenhaeuser Hof, Stuttgart-Muehlhausen	Germany	19	1240000
+Loschbour	49.81	6.4	7205	M	WHG	Loschbour_HG	LazaridisNature2014	Mixed:half+plus	Shotgun	Echternach	Luxembourg	22	1240000
+I0172	51.42	11.68	3360	M	Europe_MNChL	Esperstedt_MN	MathiesonNature2015	Mixed:half+plus	1240K.capture	Esperstedt	Germany	25.372	1158724
+I0174	46.2	18.7	6695	M	Europe_EN	Starcevo_EN	MathiesonNature2015	plus	1240K.capture	Alsonyek-Bataszek, Mernoki telep	Hungary	0.224	231471
+I0118	51.45	11.63	3892	F	Europe_LNBA	Alberstedt_LN	MathiesonNature2015	plus	1240K.capture	Alberstedt	Germany	11.371	1089011
+I0059	51.82	10.91	3796	F	Europe_LNBA	BenzigerodeHeimburg_LN	MathiesonNature2015	Mixed:half+plus	1240K.capture	Benzingerode-Heimburg	Germany	1.303	752357
+I0104	51.42	11.68	3927	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	plus	1240K.capture	Esperstedt	Germany	4.184	990775
+I0103	51.42	11.68	4000	F	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	Mixed:half+plus	1240K.capture	Esperstedt	Germany	17.528	1109474
+I0049	51.42	11.68	3867	F	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	plus	1240K.capture	Esperstedt	Germany	0.649	534318
+I0117	51.42	11.68	3743	F	Europe_LNBA	Unetice_EBA	MathiesonNature2015	Mixed:half+plus	1240K.capture	Esperstedt	Germany	1.902	874673
+I0409	42.5	0.5	6280	F	Europe_EN	Iberia_EN	MathiesonNature2015	plus	1240K.capture	Els Trocs	Spain	0.686	528513
+I0412	42.5	0.5	6249	M	Europe_EN	Iberia_EN	MathiesonNature2015	half	1240K.capture	Els Trocs	Spain	13.785	1025420
+I0054	51.66	11.53	6180	F	Europe_EN	LBK_EN	MathiesonNature2015	plus	1240K.capture	Unterwiederstedt	Germany	18.61	1032320
+I0106	51.42	11.68	3867	F	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	plus	1240K.capture	Esperstedt	Germany	0.224	230482
+I0115	51.42	11.68	3540	F	Europe_LNBA	Unetice_EBA	MathiesonNature2015	plus	1240K.capture	Esperstedt	Germany	0.409	365760
+I0116	51.42	11.68	3650	M	Europe_LNBA	Unetice_EBA	MathiesonNature2015	plus	1240K.capture	Esperstedt	Germany	1.648	640413
+I0803	51.167663	11.847527	3650	F	Europe_LNBA	Unetice_EBA	MathiesonNature2015	half	1240K.capture	Eulau	Germany	0.228	224184
+I0804	51.167663	11.847527	3671	M	Europe_LNBA	Unetice_EBA	MathiesonNature2015	half	1240K.capture	Eulau	Germany	0.054	62496
+I0047	51.89	11.04	3612	F	Europe_LNBA	Unetice_EBA	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	1.655	836247
+I0048	51.89	11.04	6153	M	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	0.456	422925
+I0057	51.89	11.04	6173	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	0.139	151700
+I0099	51.89	11.04	2889	M	Europe_LNBA	Halberstadt_LBA	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	4.948	985957
+I0046	51.89	11.04	6137	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	1.945	907019
+I0550	51.273	11.6559	3993	F	Europe_LNBA	Karsdorf_LN	MathiesonNature2015	half	1240K.capture	Karsdorf	Germany	0.15	166519
+I0795	51.273	11.6559	6174	M	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Karsdorf	Germany	0.097	107480
+I0559	51.79	11.14	4815	M	Europe_MNChL	Baalberge_MN	MathiesonNature2015	half	1240K.capture	Quedlinburg IX	Germany	0.163	178578
+I0164	51.79	11.14	3599	F	Europe_LNBA	Unetice_EBA	MathiesonNature2015	plus	1240K.capture	Quedlinburg VIII	Germany	2.487	863754
+I0176	46.4	18.74	6110	F	Europe_EN	LBKT_EN	MathiesonNature2015	plus	1240K.capture	Szemely-Hegyes	Hungary	0.066	71473
+I0410	42.5	0.5	6217	M	Europe_EN	Iberia_EN	MathiesonNature2015	plus	1240K.capture	Els Trocs	Spain	1.305	528396
+I0413	42.5	0.5	6234	F	Europe_EN	Iberia_EN	MathiesonNature2015	plus	1240K.capture	Els Trocs	Spain	1.572	657071
+I1498	47.52	21.589	6207	F	Europe_EN	Hungary_MN	MathiesonNature2015	half	1240K.capture	Debrecen Tocopart Erdoalja	Hungary	4.879	839760
+I1497	47.167	19.833	4421	F	Europe_MNChL	Hungary_Late_Copper_Age	MathiesonNature2015	half	1240K.capture	Apc-Berekalya I	Hungary	4.563	843595
+I0805	51.79166667	11.14722222	3839	M	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	half	1240K.capture	Quedlinburg VII	Germany	0.232	231622
+I0806	51.79	11.14	3824	M	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	half	1240K.capture	Quedlinburg VII	Germany	0.13	142638
+I0406	41.2522	-2.32622	3900	M	Europe_MNChL	Iberia_MN	MathiesonNature2015	plus	1240K.capture	La Mina	Spain	3.947	738288
+I0112	51.79	11.14	3820	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	plus	1240K.capture	Quedlinburg XII	Germany	3.768	985107
+I0807	51.42	11.68	5061	M	Europe_MNChL	Baalberge_MN	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.086	94260
+I1281	42.33333333	-3.5	4110	F	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	1.575	646025
+I1277	42.33333333	-3.5	3950	M	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.941	566637
+I1282	42.33333333	-3.5	3950	M	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.06	69288
+I1284	42.33333333	-3.5	3950	M	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.114	125450
+I0111	51.45	11.54	3881	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	Mixed:half+plus	1240K.capture	Rothenschirmbach	Germany	0.731	558181
+I1276	42.33333333	-3.5	3950	F	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.104	117488
+I0797	51.28305556	11.65	5500	M	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Karsdorf	Germany	0.087	95833
+I0108	51.45	11.54	3953	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	Mixed:half+plus	1240K.capture	Rothenschirmbach	Germany	1.197	764099
+I1500	47.167	20.833	6164	M	Europe_EN	ALPC_Hungary_MN	MathiesonNature2015	half	1240K.capture	Kompolt-Kigyoser	Hungary	4.246	854790
+I1280	42.33333333	-3.5	3950	F	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.22	208463
+I1539	51.42	11.68	3967	F	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.132	143190
+I1532	51.42	11.68	2500	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.566	475207
+I0113	51.79	11.14	3773	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	Mixed:half+plus	1240K.capture	Quedlinburg XII	Germany	0.777	609165
+I1505	47.88	21.192	6153	F	Europe_EN	Hungary_Neolithic	MathiesonNature2015	half	1240K.capture	Polgar Ferenci hat	Hungary	3.494	797508
+I1538	51.42	11.68	2050	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.126	137950
+I1540	51.42	11.68	2050	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.298	291946
+I1314	42.33333333	-3.5	3950	M	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.268	224117
+I1542	51.42	11.68	2050	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.068	78085
+I1508	47.318741	21.527443	6726	F	Europe_EN	Koros_Hungary_EN	MathiesonNature2015	half	1240K.capture	Berettyóújfalu-Morotva-Liget	Hungary	0.914	585392
+I1271	42.33333333	-3.5	3950	F	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.241	239592
+I1504	47.82	19.95	2769	M	Europe_LNBA	Late_Bronze_Age	MathiesonNature2015	half	1240K.capture	Ludas-Varju-Dulo	Hungary	1.332	704178
+I0405	41.2522	-2.32622	3900	M	Europe_MNChL	Iberia_MN	MathiesonNature2015	plus	1240K.capture	La Mina	Spain	0.377	327044
+I1534	51.42	11.68	2500	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.158	167366
+I1550	51.89	11.04	5500	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	0.745	514954
+I1300	42.33333333	-3.5	3950	F	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	2.792	807280
+I0060	51.45	11.54	3822	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	plus	1240K.capture	Rothenschirmbach	Germany	0.105	118605
+I1496	47.167	19.833	6135	M	Europe_EN	LBK_Hungary_MN	MathiesonNature2015	half	1240K.capture	Apc-Berekalya I	Hungary	5.246	835911
+I1272	42.33333333	-3.5	4080	F	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.977	599689
+I0407	41.2522	-2.32622	3900	F	Europe_MNChL	Iberia_MN	MathiesonNature2015	plus	1240K.capture	La Mina	Spain	1.363	567058
+I1502	47.167	20.833	3686	F	Europe_LNBA	Hungary_Mako_EBA	MathiesonNature2015	half	1240K.capture	Kompolt-Kigyoser	Hungary	4.682	824420
+I1544	51.42	11.68	2500	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.104	117069
+I0100	51.89	11.04	6080	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	6.727	1002375
+I1495	47.167	19.833	5598	M	Europe_EN	Hungary_MN	MathiesonNature2015	half	1240K.capture	Apc-Berekalya I	Hungary	4.853	854267
+I0659	51.89	11.04	6130	M	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	0.703	582038
+I1507	47.93	21.2	6835	M	WHG	Koros_Hungary_EN_HG	MathiesonNature2015	half	1240K.capture	Tiszaszolos-Domahaza	Hungary	5.103	824434
+I0025	48.78	9.18	5500	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Viesenhaeuser Hof, Stuttgart-Muehlhausen	Germany	2.655	866455
+I0026	48.78	9.18	5500	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Viesenhaeuser Hof, Stuttgart-Muehlhausen	Germany	3.625	926521
+I0022	48.78	9.18	5500	F	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Viesenhaeuser Hof, Stuttgart-Muehlhausen	Germany	0.441	379736
+I0560	51.79	11.14	4745	F	Europe_MNChL	Baalberge_MN	MathiesonNature2015	half	1240K.capture	Quedlinburg IX	Germany	0.407	389067
+I0012	58.535	15.046	6734	M	SHG	Motala_HG	MathiesonNature2015	plus	1240K.capture	Motala, Kanaljorden	Sweden	1.756	805855
+I0017	58.535	15.046	6773	M	SHG	Motala_HG	MathiesonNature2015	plus	1240K.capture	Motala, Kanaljorden	Sweden	4.391	944923
+I1303	42.33333333	-3.5	3950	M	Europe_MNChL	Iberia_Chalcolithic	MathiesonNature2015	half	1240K.capture	El Mirador Cave, Atapuerca, Burgos	Spain	0.733	468021
+I0551	51.520005	11.852407	3400	M	Europe_MNChL	Salzmuende_MN	MathiesonNature2015	half	1240K.capture	Salzmuende-Schiebzig	Germany	0.091	104265
+I0011	58.535	15.046	6701	F	SHG	Motala_HG	MathiesonNature2015	plus	1240K.capture	Motala, Kanaljorden	Sweden	1.03	643050
+I0013	58.535	15.046	6877	M	SHG	Motala_HG	MathiesonNature2015	plus	1240K.capture	Motala, Kanaljorden	Sweden	0.657	320332
+I0171	51.82	10.91	3758	F	Europe_LNBA	BenzigerodeHeimburg_LN	MathiesonNature2015	plus	1240K.capture	Benzingerode-Heimburg	Germany	0.143	144777
+I1546	51.82	10.91	2500	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	half	1240K.capture	Benzingerode-Heimburg	Germany	0.143	155325
+I1536	51.42	11.68	2500	M	Europe_LNBA	Corded_Ware_Germany	MathiesonNature2015	half	1240K.capture	Esperstedt	Germany	0.105	116878
+I0014	58.535	15.046	6842	F	SHG	Motala_HG	MathiesonNature2015	plus	1240K.capture	Motala, Kanaljorden	Sweden	2.709	763001
+I0015	58.535	15.046	6863	M	SHG	Motala_HG	MathiesonNature2015	plus	1240K.capture	Motala, Kanaljorden	Sweden	1.562	611053
+I0408	41.2522	-2.32622	3900	F	Europe_MNChL	Iberia_MN	MathiesonNature2015	Mixed:half+plus	1240K.capture	La Mina	Spain	13.608	958102
+I0585	42.911	-5.3778	6980	M	WHG	Iberia_HG	MathiesonNature2015	half	1240K.capture	La Brana-Arintero, Leon	Spain	19.536	1057168
+I1506	47.88	21.192	6237	F	Europe_EN	LBK_Hungary_EN	MathiesonNature2015	half	1240K.capture	Polgar Ferenci hat	Hungary	1.517	729538
+I1549	51.82	10.91	2500	F	Europe_LNBA	Bell_Beaker_Germany	MathiesonNature2015	half	1240K.capture	Benzingerode-Heimburg	Germany	2.357	809566
+I1499	48.52	21.168	6185	F	Europe_EN	Bu_kk_Culture_Hungary_MN	MathiesonNature2015	half	1240K.capture	Garadna	Hungary	3.319	847840
+I0821	51.89583333	11.04666667	6076	M	Europe_EN	LBK_EN	MathiesonNature2015	half	1240K.capture	Halberstadt-Sonntagsfeld	Germany	0.116	128759
+CB13	41.37	1.89	6410	F	Europe_EN	Iberia_EN	OlaldeMBE2015	minus	Shotgun	Cova Bonica, Vallirana, Barcelona	Spain	0.979	746511
+HGDP00511	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00512	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00513	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00514	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00515	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00516	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00517	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00518	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00519	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00522	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00523	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00524	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00525	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00526	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00527	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00528	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00529	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00531	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00533	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00534	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00535	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00536	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00537	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00538	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP00539	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01147	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01151	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01152	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01153	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01155	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01156	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01157	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01161	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01162	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01163	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01164	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01166	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01167	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01168	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01169	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01171	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01172	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01173	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01174	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HGDP01177	46	10	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est393	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est375	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est380	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est391	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est377	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est372	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est358	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est400	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est397	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Est394	58.5	24.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15725	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15733	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15726	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15727	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15728	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15729	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15730	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15731	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15724	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NA15732	50.1	14.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00103	56	-3.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00104	56	-3.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00105	56	-3.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00106	56	-3.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00128	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00129	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00130	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00131	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00233	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00234	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00232	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01500	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01501	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01503	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01504	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01506	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01507	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01509	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01510	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01512	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01513	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01515	42.8	-2.7	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01516	42.8	-2.7	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01518	42.8	-2.7	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01524	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01527	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01528	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01530	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01536	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01537	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01605	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01606	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01607	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01608	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01613	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01615	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01617	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01618	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01619	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01620	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01623	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01624	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01625	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01626	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00231	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00126	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01747	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01746	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01675	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01680	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01682	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01700	42.8	-2.7	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01679	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01702	42.8	-2.7	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01676	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01684	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01705	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01707	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01685	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01686	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01704	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01673	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01761	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01770	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01762	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01773	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG02220	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG02238	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01678	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01699	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG01697	37.4	-6	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+HG00160	50.3	-4.9	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO53	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR119	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR124	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO103	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO107	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+BEL57	39.4	15.5	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO47	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR106	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO41	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR101	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR146	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR108	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO66	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR126	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR107	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO153	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR109	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench3326	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO31	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO93	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench3947	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench1323	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR148	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+CRO48	43.5	16.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+NOR111	60.4	5.4	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench3951	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench3068	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench1112	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+SouthFrench4018	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23812	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23814	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23821	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23830	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23833	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23862	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23915	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23919	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French23989	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24061	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24075	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24076	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24090	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24118	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24120	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24124	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24144	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24148	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24178	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24247	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24381	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24400	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24408	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24433	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24434	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24437	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24690	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French24817	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+French25068	46	2	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+ITS2	39.4	15.5	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+ITS4	39.4	15.5	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+ITS5	39.4	15.5	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+ITS7	39.4	15.5	-2016	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA

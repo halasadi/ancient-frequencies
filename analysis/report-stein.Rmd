@@ -1,0 +1,414 @@
+---
+title: "Developing a Spatial & Temporal Model for Ancient DNA"
+date: "November 21, 2016"
+output: html_document
+fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Recent technologies have sparked an explosion in ancient DNA research. Ancient DNA allows us to study human history from a genomic perspective and these studies have led researchers to develop new models of European human history (Haak et al 2015). Furthermore, ancient dna allows us to study human evolution across time and past papers have allowed us to document the rise of positively selected alleles (Mathieson et al 2015). 
+
+The field of ancient dna (with whole genome sequencing) is relatively new. As of yet, there does not exist a model that models both the temporal and spatial dynamics of ancient individuals. There has been a large body of work demonstrating that genes show a strong pattern of spatial covariance (Novembre et al 2008). However, past work in ancient dna has simply grouped individuals into abritarily defined populations across space and time (Mathieson et al 2015). The variables of space and time can act as possible confounders and so it is important to model both variables to develop a null model for gene evolution. 
+
+In this report, we first conduct exploratory data analysis in which we find strong spatial covariance and find that temporal covariance to be considerable weaker. Secondly, we apply a simple model of spatial and temporal covariance to the data. For computational reasons, we apply the model in two steps. The first step is to a fit a purely spatial model to modern data. The second step consists of applying the model to the ancient data with the spatial parameter fixed (using the estimate from the first step) and estimating a temporal covariance term. Our results are consistent with the exploratory data analysis, we find that there is very little temporal covariance. Our results suggest that there has been high population turn-over in Europe across time, consistent with previous work (Haak et al 2015).
+
+## data description
+
+The data is a genotype matrix ($G$) that is of dimension $N$ x $P$ where $N$ is the number of individuals and $P$ is the number of SNPs. $G_{i,j}$ is the genotype of individual $i$ at snp $j$, in which $G_{i,j} \in {0,1}$. Each individual has a time $t_i$ (t = 0 being the present time) and location $x_i$ with a documented latitude and longitude. Here, N = 328 and after filtering out correlated SNPs, P = 139082. 
+
+```{r imports, warning=FALSE, message=FALSE, echo=FALSE}
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+library(dplyr)
+library(geosphere)
+library(viridis)
+library('rstan')
+library('MASS')
+library('boot')
+library("sp")
+
+```
+
+
+```{r read_data1, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE,fig.cap="Locations and times of the merged ancient and modern datasets (t=0 is the present)", fig.align='center'}
+# read the data
+load("../data/genotypes.Rdata")
+G <- genotypes
+snps <- colnames(G)
+geno_df <- as.data.frame(t(G))
+rownames(geno_df) <- NULL
+geno_df$snp <- snps
+meta_df <- read.table("../data/meta.tsv", stringsAsFactors = FALSE, header=TRUE) %>% mutate(time=time+2016)
+
+# plot up the map
+map_plot <- ggplot(meta_df, aes(x=long, y=lat, fill=time)) + 
+            scale_fill_viridis(option = "C") + 
+            borders("world", xlim = c(-10.00,  27.00), ylim = c(39.00, 65.00),
+                    fill="#bdbdbd", colour="#bdbdbd") + 
+            geom_point(alpha=.6, size=3, pch=21, colour="white", position = position_jitter(width = 4, height = 4)) +
+            scale_size_area() + 
+            coord_map() + 
+            theme_minimal()
+map_plot
+```
+
+However, not all SNPs have values for every individual. The SNP missing rate varies across individuals, with ancients having much more missingness than modern individuals
+
+<div style="width:600px; height=500px">
+<center>
+![Missing rates across SNPs](miss_rate.png)</center>
+</div>
+
+## exploratory data analysis
+
+### PCA
+<div style="width:600px; height=500px">
+<center>
+![](anc_pca.png)</center>
+</div>
+
+We see some temporal ordering along PC1. However, this explains little of the variation and it seems that there is no major low-rank structure in this data.
+
+### genetic distance between all pairs in the data
+<div style="width:600px; height=500px">
+<center>
+![](geo_time_genetic_dist.png)</center>
+</div>
+
+We can see three main clusters: ancient vs modern, ancient versus ancient, and modern versus modern. The ancient versus ancient comparisons have the highest distance which is probably due to increases error rates when sequencing ancient dna. The ancients versus moderns have the second highest distance and the modern vs modern comparisons having the lowest. This makes sense as error rates in modern data are smaller than error rates in ancient data.
+
+
+### Assessing Spatial Covariance in Moderns (r2=0.21)
+
+<div style="width:600px; height=500px">
+<center>
+![](mod_geo_vs_genetic_dist.png)</center>
+</div>
+
+As expected, we see a strong signal of spatial covariance in modern individuals (r2 ~ 0.21). This can serve as a baseline to compare spatial covariance in ancient individuals.
+
+## Asessing spatial covariance in ancient individuals
+
+<div style="width:600px; height=500px">
+<center>
+![](anc_ibd_over_time.png)</center>
+</div>
+
+This plot is perhaps the most interesting in this entire report. We see that there is a strong signal (highest r2 ~ 0.14 compared to r2 = 0.21 for modern individuals) of spatial covariance in the ancient individuals but only between people living around the same time. This signal is consistent with the hypothesis of high population turn-over across time in Europe.
+
+## Asessing temporal covariance in ancient individuals
+
+<div style="width:600px; height=500px">
+<center>
+![](anc_ibt_over_geo.png)</center>
+</div>
+
+Temporal covariance is significantly weaker than spatial covariance in ancient individuals. There seems to be an unusual pattern of it dropping quickly versus gradually. 
+
+**Summary** Taken together, our exploratory data analysis suggests that there is a signal of spatial and temporal covariance in the data. The temporal covariance is significantly weaker compared to the spatial covariance. Furthermore, our results suggest that temporal covariance decays quite quickly. 
+
+## Model
+
+Let $i\in(1,..N)$ index individual where $N$ is the number of individuals. Let $\theta_{x_i,t_i}$ index the allele frequencies on the unconstrained scale, and $x_i$ be the location of individual $i$ and $t_i$ be the time of individual $i$. Then,
+
+$$\theta_{x_i,t_i} \sim MVN(\vec{\mu}, \Sigma)$$
+
+where,
+
+$$\vec{\mu} = (\mu_p,...,\mu_p)$$
+$$\Sigma_{j,k} = \phi k_1(x_j, x_k) k_2(t_j, t_k)$$
+
+$$\mu_p \sim N(0, \frac{1}{\eta})$$
+
+such that $\mu_p$ is the mean allele frequency (on the logit scale) of SNP $p$ and the kernals are
+
+$$k_1(x_j,x_k) = e^{-||x_j-x_k||/\alpha}$$
+$$k_2(t_j,t_k) = e^{-||t_j-t_k||/\beta}$$
+
+Finally, 
+
+$$f_{x_j,t_j} = logit(\theta_{x_j,t_j})$$
+$$d_{i,p} \sim Bernouli(f_{x_j,t_j})$$
+
+where $d_{i,p}$ is the data at snp $p$ in individual $i$. 
+
+$$ \eta \sim \gamma(0.01, 0.01) $$
+$$ \phi \sim \gamma(0.01, 0.01) $$
+$$ \alpha \sim \gamma(5, 5)$$
+$$ \beta \sim \gamma(5,5)$$
+
+
+Finally, we assume assume independence across SNPs. We fit this model with MCMC.
+
+
+## Simulations under the model
+
+```{r, echo = FALSE}
+euc.dist <- function(x1, x2) sqrt(sum((x1 - x2) ^ 2))
+midPoints <- function(x){
+  (x[-length(x)]+x[-1])/2
+}
+
+generate_data <- function(alpha, beta, phi, N, P, xmin=0, xmax=10, ymin=0, ymax=10){
+    lat = (xmax-xmin) * runif(N)
+  long = (ymax-ymin) * runif(N)
+  my.locations <- cbind(lat,long)
+  t = 10 * runif(N)
+  mu = rep(0, N)
+  Sigma = matrix(nrow = N, ncol = N, 0)
+  for (i in 1:(N-1)){
+    for (j in (i+1):N){
+      Sigma[i,j] <- phi * exp(-euc.dist(my.locations[i,], my.locations[j,])/alpha) *   exp(-euc.dist(t[i], t[j])/beta);
+    Sigma[j,i] <- Sigma[i,j]
+    }
+  }
+
+  for (k in 1:N){
+    Sigma[k,k] <- phi + 0.01
+  }
+
+  theta = mvrnorm(n=P, mu=mu, Sigma=Sigma)
+  y = matrix(nrow=P, ncol = N, 0)
+  for (i in 1:N){
+    for (j in 1:P){
+      y[j,i] = rbinom(n=1,size=1, prob = inv.logit(theta[j,i]))
+    }
+  }
+  
+  ret = list(data = y, theta=theta, t = t, x = my.locations)
+
+}
+```
+
+Next, I simulate data for 30 individuals at 50 SNPs, with $N=30$, $P=50$, $\phi=1$, $\alpha=10$, $\beta=10$.
+
+```{r, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE, verbose=FALSE}
+N=50
+P=50
+phi=1
+alpha=10
+beta=10
+ret <- generate_data(alpha, beta, phi, N, P)
+nsamps = rep(1, N)
+
+test_data = list(N=N, P=P, n = nsamps, x = ret$x, t=ret$t,y = ret$data)
+
+
+fit = stan(file = "../code/simple-spatial-time-grouped.stan", data =test_data, iter=1000, chains=1, verbose = FALSE)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Locations and time points of simulated data", fig.align='center'}
+plot(ret$x[,1], ret$x[,2], xlab = "lat", ylab = "long", type = "n")
+text(ret$x[,1], ret$x[,2], round(ret$t, 1))
+```
+
+
+### MCMC results
+```{r, echo = FALSE, fig.cap="Estimated values from MCMC (red=90% CI interval, black=95% CI)", fig.align='center'}
+stan_plot(fit, pars=c("alpha", "beta", "phi"))
+```
+
+```{r, echo =FALSE, fig.cap = "estimated allele frequency versus true allele frequency", fig.align='center'}
+#get_posterior_mean(fit, pars = c("beta", "alpha", "phi"))
+plot(ret$theta, colMeans(extract(fit)$theta), xlab = "true theta", ylab = "estimated theta")
+abline(0, 1, col= "red", lwd=2)
+```
+
+It appears that the estimates of $\phi$, $\alpha$ and $\beta$ are very different compared to the true values. In fact, these parameters mare unindetifiable in this model. However, despite issues with identifiability, the allele frequencies are estimated resonably well.  
+
+I only applied the model to 50 individuals and 50 SNPs because solving this problem with MCMC is incredibly time consuming. Indeed, the number of parameters exceeds the number of data points, which in the case here equals 2553 parameters: 50 * 50 = 2500 latent allele frequencies + 3 covariance terms ($\alpha$, $\beta$, $\phi$) + 50 mean terms ($\mu_1$,...,$\mu_P$). 
+
+## Applying the model to real data.
+
+Because of computational reasons, I apply the model to only 42 SNPs (SNPs with the lowest missingness rates). To further reduce computational burden, I apply the model to modern data to estimate the spatial covariance term ($\alpha$) and the over-dispersion parameter ($\phi$), and fix these parameters in the model to estimate the temporal covariance term ($\beta$) in the ancients only.
+
+
+
+```{r process_data, warning=FALSE, message=FALSE, cache=FALSE, echo=F, eval=FALSE}
+load("../data/genotypes.Rdata")
+G <- genotypes
+snps <- colnames(G)
+geno_df <- as.data.frame(t(G))
+rownames(geno_df) <- NULL
+geno_df$snp <- snps
+meta_df <- read.table("../data/meta.tsv", stringsAsFactors = FALSE, header=TRUE) %>% mutate(time=time+2016)
+## Process data
+# tidy format (long data.frame!!!)
+gath_geno_df <- geno_df %>% gather(iid, genotype, -snp)
+
+# outlier individual ids
+outlier_iids <- c("ATP2")
+
+# remove outliers, 
+# join meta-data, 
+# add is modern indicator column,
+# sample genotypes from moderns
+gath_geno_df <- gath_geno_df %>% 
+                filter(!(iid %in% outlier_iids)) %>% 
+                inner_join(meta_df, by=c("iid")) %>%
+                mutate(is_modern = ifelse(time == 0, 1, 0))
+
+# calculate genotype missingness for each snp in ancients
+miss_df <- gath_geno_df %>% 
+           filter(is_modern == 0) %>%
+           group_by(snp) %>% 
+           summarise(miss_rate = sum(is.na(genotype)) / n())
+
+# vector of snps with high missingness rate in ancients
+high_miss_df <- miss_df %>% filter(miss_rate >= .3) 
+high_miss_snps <- high_miss_df$snp
+
+# filter out snps with high missigness rate in ancients in full datset
+gath_geno_fil_df <- gath_geno_df %>% filter(!(snp %in% high_miss_snps)) 
+
+
+gath.geno.modern <- gath_geno_fil_df %>% filter(is_modern== TRUE) %>% filter(!is.na(genotype))
+
+df.snp <- data.frame(snp=unique(gath.geno.modern$snp), new.snp=1:length(unique(gath.geno.modern$snp)), stringsAsFactors = FALSE)
+
+df.iid <- data.frame(iid=unique(gath.geno.modern$iid), new.iid=1:length(unique(gath.geno.modern$iid)), stringsAsFactors = FALSE)
+
+merge.df <- gath.geno.modern %>% inner_join(df.iid, by = c("iid")) %>% inner_join(df.snp, by = c("snp"))
+
+
+
+df.iid.2 <- df.iid %>% inner_join(meta_df, by=c("iid"))
+N = nrow(df.iid.2)
+my.locations <- cbind(df.iid.2$lat,df.iid.2$long)
+n = rep(2, N)
+
+my.data = list(jj=merge.df$new.iid, kk=merge.df$new.snp, O=nrow(merge.df), N=N, x=my.locations, y = merge.df$genotype, n=n, P=length(unique(merge.df$snp)))
+
+```
+
+
+### fit to the modern data
+
+Here, we fit the model to moderns only to estimate the spatial covariance term ($\alpha$) and the over-dispersion $\phi$. 
+
+```{r, warning=FALSE, message=FALSE, cache=TRUE, echo=F}
+
+fit = vb(stan_model(file="../code/model-spatial-only.stan"), data = my.data)
+```
+
+
+```{r, echo = FALSE, fig.cap="500 draws from MCMC", fig.align='center'}
+#stan_plot(fit, pars=c("alpha"))
+stan_hist(fit, pars = c("alpha"))
+modern.means <- get_posterior_mean(fit, pars=c("alpha"))
+#hist(inv.logit(colMeans(extract(fit)$mu)),10, xlab = "allele frequency", ylab = "count", main = "",100)
+```
+
+
+### fitting the model to ancient data
+
+```{r, warning=FALSE, message=FALSE, cache=FALSE, echo=F, eval=FALSE}
+load("../data/genotypes.Rdata")
+G <- genotypes
+snps <- colnames(G)
+geno_df <- as.data.frame(t(G))
+rownames(geno_df) <- NULL
+geno_df$snp <- snps
+meta_df <- read.table("../data/meta.tsv", stringsAsFactors = FALSE, header=TRUE) %>% mutate(time=time+2016)
+## Process data
+# tidy format (long data.frame!!!)
+gath_geno_df <- geno_df %>% gather(iid, genotype, -snp)
+
+# outlier individual ids
+outlier_iids <- c("ATP2")
+
+# remove outliers, 
+# join meta-data, 
+# add is modern indicator column,
+# sample genotypes from moderns
+gath_geno_df <- gath_geno_df %>% 
+                filter(!(iid %in% outlier_iids)) %>% 
+                inner_join(meta_df, by=c("iid")) %>%
+                mutate(is_modern = ifelse(time == 0, 1, 0))
+
+# calculate genotype missingness for each snp in ancients
+miss_df <- gath_geno_df %>% 
+           filter(is_modern == 0) %>%
+           group_by(snp) %>% 
+           summarise(miss_rate = sum(is.na(genotype)) / n())
+
+# vector of snps with high missingness rate in ancients
+high_miss_df <- miss_df %>% filter(miss_rate >= .3) 
+high_miss_snps <- high_miss_df$snp
+
+# filter out snps with high missigness rate in ancients in full datset
+gath_geno_fil_df <- gath_geno_df %>% filter(!(snp %in% high_miss_snps)) 
+gath.geno.ancient <- gath_geno_fil_df %>% filter(is_modern== FALSE) %>% filter(!is.na(genotype)) %>% mutate(genotype = ifelse(!(iid %in% c("Stuttgart", "Loschbour")) & !is.na(genotype), genotype / 2, genotype))
+
+
+df.snp <- data.frame(snp=unique(gath.geno.ancient$snp), new.snp=1:length(unique(gath.geno.ancient$snp)), stringsAsFactors = FALSE)
+
+df.iid <- data.frame(iid=unique(gath.geno.ancient$iid), new.iid=1:length(unique(gath.geno.ancient$iid)), stringsAsFactors = FALSE)
+
+merge.df <- gath.geno.ancient %>% inner_join(df.iid, by = c("iid")) %>% inner_join(df.snp, by = c("snp"))
+
+kk = merge.df$new.snp
+jj = merge.df$new.iid
+O = length(jj)
+P = length(unique(merge.df$snp))
+
+df.iid.2 <- df.iid %>% inner_join(meta_df, by=c("iid"))
+N = nrow(df.iid.2)
+my.locations <- cbind(df.iid.2$lat,df.iid.2$long)
+t = df.iid.2$time
+n = rep(1, N)
+
+#binomial data for Loschbour and Stuttgart
+n[105]= 2
+n[106] =2
+
+my.data = list(jj=jj, kk=kk, O=O, N=N, x=my.locations, y = merge.df$genotype, n=n, P=P, t=t, alpha = modern.means[1], phi = modern.means[3])
+```
+
+```{r, cache=TRUE, echo = FALSE}
+fit2 = vb(stan_model(file="../code/model-spatial-fixed-time.stan"), data = my.data)
+```
+
+
+```{r, echo = FALSE, fig.cap = "500 draws from MCMC", fig.align='center'}
+stan_hist(fit2, pars=c("beta"))
+ancient.means <- get_posterior_mean(fit2, pars=c("beta"))
+#stan_hist(fit2, pars = c("beta"))
+```
+
+The modern spatial covariance term is `r modern.means`, while the temporal covariance term is estimated to be `r ancient.means`. $\alpha$ and $\beta$ appear in the model in an exponential term divided by a distance (either distance in time or space). It is important to note that the euclidean distance between individuals in space is on the order of 0-50 units and the euclidean distance between individuals in time is on the order of 0 to 9,000 units (so $exp(-\frac{9000}{\beta})$ is quite small). Our results here suggest that there is very little covariance between between individuals across time bins, confirming our results in the explatory data analysis section. However, these results should be taken with a caveat as getting the MCMC to work on the real data was filled with challenges. The missingness in the data prevented me from vectorizing the code which caused it to be considerably slower than applying the model to simulated data (which was already pretty slow).
+
+## Future Directions
+
+### Explatory data analysis
+
+**Degree of temporal covariance across populations** Our results suggest that temporal covariance is weak overall across ancient individuals. However, it remains unclear whether this holds true uniformly for all populations. Do certain populations show higher temporal covariance than others? Past ancient-dna studies suggest that population turnover is heterogenous across Europe. I plan to explore this further.
+
+**Effect of dating techniques on results** In this study, we mixed dates estimated from radiocarbon dating and dating based on nearby archaelogical artifacts. We found that these two techiques often produced quite different answers (sometimes even differing by more than 2000 years). It would be interesting to reproduce our results on only individuals with radiocarbon dates.
+
+**Getting at the biological cause** It is not surprising to see that there has been high turnover in Europe across time. It will be interesting to investigate the dynamics of this turn-over. For example, when was it strongest? Is there a spatial trend of turn-over? Past studies suggest that "Farmer" populations replaced "Hunter-Gatherers" starting from eastern europe moving west. Perhaps, more exploratory data analysis can get at this question.
+
+### Future Future Directions
+
+Things to do in the future but cannot be done with the timeframe of the class.
+
+**Computational considerations** Fitting the model to the data with MCMC is incredibly time consuming and here I struggled to fit the model to a data-set with only 42 SNPs. The ideal thing to do is integrate out latent variables and this is where techniques such as Integrated Nested Laplace Approximations might work (Rue et al, 2009). 
+
+**Developing a new space-time model** Assuming spatial and temporal homogeneity is wrong. Can we develop a model that takes account of the features observed in the explatory data analysis?
+
+
+## References
+
+1. Haak, Wolfgang, et al. "Massive migration from the steppe was a source for Indo-European languages in Europe." Nature 522.7555 (2015): 207-211.
+
+2. Novembre, John, et al. "Genes mirror geography within Europe." Nature 456.7218 (2008): 98-101.
+
+3. Mathieson, Iain, et al. "Genome-wide patterns of selection in 230 ancient Eurasians." Nature 528.7583 (2015): 499-503.
+
+4. Rue, Håvard, Sara Martino, and Nicolas Chopin. "Approximate Bayesian inference for latent Gaussian models by using integrated nested Laplace approximations." Journal of the royal statistical society: Series b (statistical methodology) 71.2 (2009): 319-392.

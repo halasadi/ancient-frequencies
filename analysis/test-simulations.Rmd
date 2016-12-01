@@ -11,8 +11,6 @@ library('rstan')
 library('MASS')
 library('boot')
 library("sp")
-
-
 ```
 
 
@@ -26,7 +24,7 @@ midPoints <- function(x){
 }
 
 generate_data <- function(alpha, beta, phi, N, P, xmin=0, xmax=10, ymin=0, ymax=10){
-  lat = (xmax-xmin) * runif(N)
+    lat = (xmax-xmin) * runif(N)
   long = (ymax-ymin) * runif(N)
   my.locations <- cbind(lat,long)
   t = 10 * runif(N)
@@ -57,19 +55,24 @@ generate_data <- function(alpha, beta, phi, N, P, xmin=0, xmax=10, ymin=0, ymax=
 
 ```
 
-```{r}
-N=30
-P=50
-phi=1
-alpha=100
-beta=50
+```{r, cache=T}
+N=100
+P=20
+phi=0.01
+alpha=10
+beta=10
 ret <- generate_data(alpha, beta, phi, N, P)
 nsamps = rep(1, N)
 
 test_data = list(N=N, P=P, n = nsamps, x = ret$x, t=ret$t,y = ret$data)
+my.df <- data.frame(x = ret$x[,1], y = ret$x[,2], t = ret$t)
+gg <- ggplot(my.df, aes(x=x, y=y, fill=t))  + 
+            scale_fill_viridis(option = "C", name = "years BP") + labs(x = "lat", y = "long")  +
+            geom_point(alpha=.6, size=3, pch=21, colour="white") +
+            theme_minimal() 
+gg + ggsave("figures/sim_map.pdf", width=6, height=4)
 
-
-fit = stan(file = "../code/simple-spatial-time-grouped.stan", data =test_data, iter=1000, chains=1)
+fit = stan(file = "../code/simple-spatial-time-grouped.stan", data =test_data, iter=10000, chains=1)
 stan_plot(fit, pars=c("alpha", "beta", "phi"))
 get_posterior_mean(fit, pars = c("beta", "alpha", "phi"))
 plot(ret$theta, colMeans(extract(fit)$theta), xlab = "true theta", ylab = "estimated theta")
@@ -83,11 +86,11 @@ text(ret$x[,1], ret$x[,2], round(ret$t, 1))
 
 ## spatial polygon assignment
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, cache=T, eval = FALSE}
 
-N=150
-P=200
-phi=1
+N=100
+P=20
+phi=0.1
 alpha=10
 beta=10
 ret <- generate_data(alpha, beta, phi, N, P)
@@ -158,11 +161,11 @@ plot(xx, yy, xlab = "true theta", ylab = "estimated theta", main = paste0("corre
 stan_plot(fit, pars=c("alpha", "beta", "phi"))
 get_posterior_mean(fit, pars = c("beta", "alpha", "phi"))
 
-scale_colors <- cm.colors(n.times)
+scale_colors <- terrain.colors(n.times)
 my.colors <- scale_colors[rc]
-plot(sg, axes=T)
+plot(sg, axes=T, xlab = "lat", ylab = "long")
 points(ret$x, col = my.colors, lwd=4)
-legend("topleft", pch=16, col=scale_colors,
+legend("topleft", pch=16, col=scale_colors,title = "midpoint of time bin (years)",
 legend=midpoints.time)
 
 ```

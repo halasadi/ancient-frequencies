@@ -62,6 +62,5 @@ model {
 
    // setting the priors
    eta_sq ~ gamma(0.001, 0.001);
-   beta ~ gamma(1,1);
+   beta ~ gamma(5,5);
 }
-     

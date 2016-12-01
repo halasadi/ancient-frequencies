@@ -43,7 +43,7 @@ model {
     y[k] ~ binomial_logit(n, theta[k]);
   }
 
-  alpha ~ gamma(5,5);
-  beta ~ gamma(5,5);
+  alpha ~ gamma(1,1);
+  beta ~ gamma(1,1);
   phi ~ gamma(1,1);
 }

@@ -63,4 +63,3 @@ model {
    alpha ~ gamma(5,5);
    phi ~ gamma(1,1);
 }
-     

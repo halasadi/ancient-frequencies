@@ -1,4 +1,4 @@
-ID	lat	long	sex	analyis_label	label	source	udg	data_type	time	location	country	coverage	n_snps
+iid	lat	long	sex	analyis_label	label	source	udg	data_type	time	location	country	coverage	n_snps
 RISE247	47.327	18.962	M	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	3372	Százhalombatta-Földvár	Hungary	0.273	237322
 RISE487	45.26	10.379	M	Europe_MNChL	Remedello_BA	AllentoftNature2015	minus	Shotgun	4557	Remedello di Sotto	Italy	0.223	239530
 RISE483	47.341	18.896	F	Europe_LNBA	Vatya	AllentoftNature2015	minus	Shotgun	2000	Erd 4	Hungary	0.121	134337

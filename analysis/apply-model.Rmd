@@ -9,9 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Imports
 
-```{r imports, warning=FALSE, message=FALSE}
+```{r imports, warning=FALSE, message=FALSE, echo=F}
+## Imports
 library(ggplot2)
 library(tidyr)
 library(reshape2)
@@ -21,8 +21,8 @@ library(viridis)
 library(rstan)
 ```
 
+```{r read_data, warning=FALSE, message=FALSE, cache=TRUE, echo=F}
 ## Read data
-```{r read_data, warning=FALSE, message=FALSE, cache=TRUE}
 load("../data/genotypes.Rdata")
 G <- genotypes
 snps <- colnames(G)
@@ -30,11 +30,12 @@ geno_df <- as.data.frame(t(G))
 rownames(geno_df) <- NULL
 geno_df$snp <- snps
 meta_df <- read.table("../data/meta.tsv", stringsAsFactors = FALSE, header=TRUE)
+meta_df$time = meta_df$time + 2016
 ```
 
-## Process data
 
-```{r process_data, warning=FALSE, message=FALSE, cache=TRUE}
+```{r process_data, warning=FALSE, message=FALSE, cache=TRUE, echo=F}
+## Process data
 # tidy format (long data.frame!!!)
 gath_geno_df <- geno_df %>% gather(iid, genotype, -snp)
 
@@ -66,7 +67,10 @@ gath_geno_fil_df <- gath_geno_df %>% filter(!(snp %in% high_miss_snps))
 ```
 
 
-### fit to the modern data
+## fit to the modern data
+
+Here, we fit only use the spatial model to fit
+
 ```{r}
 gath.geno.modern <- gath_geno_fil_df %>% filter(is_modern== TRUE) %>% filter(!is.na(genotype))
 
@@ -77,23 +81,20 @@ df.iid <- data.frame(iid=unique(gath.geno.modern$iid), new.iid=1:length(unique(g
 merge.df <- gath.geno.modern %>% inner_join(df.iid, by = c("iid")) %>% inner_join(df.snp, by = c("snp"))
 
 
-kk = merge.df$new.snp
-jj = merge.df$new.iid
-O = length(jj)
-P = length(unique(merge.df$snp))
 
 df.iid.2 <- df.iid %>% inner_join(meta_df, by=c("iid"))
 N = nrow(df.iid.2)
 my.locations <- cbind(df.iid.2$lat,df.iid.2$long)
 n = rep(2, N)
 
-my.data = list(jj=jj, kk=kk, O=O, N=N, x=my.locations, y = merge.df$genotype, n=n, P=P)
+my.data = list(jj=merge.df$new.iid, kk=merge.df$new.snp, O=nrow(merge.df), N=N, x=my.locations, y = merge.df$genotype, n=n, P=length(unique(merge.df$snp)))
 
 fit = vb(stan_model(file="../code/model-spatial-only.stan"), data = my.data)
 
-stan_plot(fit, pars=c("alpha", "eta_sq", "phi"))
-my.means <- get_posterior_mean(fit, pars=c("alpha", "eta_sq", "phi"))
-#hist(inv.logit(colMeans(extract(fit)$mu)),10, xlab = "allele frequency", ylab = "count", main = "")
+#stan_plot(fit, pars=c("alpha", "eta_sq", "phi"))
+stan_hist(fit, pars = c("alpha"))
+modern.means <- get_posterior_mean(fit, pars=c("alpha", "eta_sq", "phi"))
+#hist(inv.logit(colMeans(extract(fit)$mu)),10, xlab = "allele frequency", ylab = "count", main = "",100)
 ```
 
 
@@ -123,11 +124,13 @@ n = rep(1, N)
 n[105]= 2
 n[106] =2
 
-my.data = list(jj=jj, kk=kk, O=O, N=N, x=my.locations, y = merge.df$genotype, n=n, P=P, t=t, alpha = my.means[1], phi = my.means[3])
+my.data = list(jj=jj, kk=kk, O=O, N=N, x=my.locations, y = merge.df$genotype, n=n, P=P, t=t, alpha = modern.means[1], phi = modern.means[3])
 
 fit2 = vb(stan_model(file="../code/model-spatial-fixed-time.stan"), data = my.data)
 
-stan_plot(fit, pars=c("beta", "eta_sq"))
-my.means <- get_posterior_mean(fit, pars=c("alpha", "eta_sq", "phi"))
+stan_plot(fit2, pars=c("beta", "eta_sq"))
+ancient.means <- get_posterior_mean(fit2, pars=c("beta", "eta_sq"))
+stan_hist(fit2, pars = c("beta"))
+
 
 ```
